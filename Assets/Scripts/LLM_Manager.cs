@@ -1,0 +1,137 @@
+﻿using UnityEngine;
+using UnityEngine.Networking;
+using System.Collections;
+using System.Text;
+
+public class LLM_Manager : MonoBehaviour
+{
+    public PlayerController playerController;
+    public Transform house;
+
+    private const string OLLAMA_URL = "http://localhost:11434/api/generate";
+
+    private string systemPrompt =
+        "Tu es un interpréteur de commandes pour un jeu vidéo de simulation urbaine. "
+        + "Ton rôle est de convertir les ordres du joueur en un objet JSON structuré, sans phrase conversationnelle. "
+        + "Format attendu : {\"intention\": string, \"entites\": [{\"type\": string, \"valeur\": string}]}.\n\n"
+        + "Les intentions possibles : CONSTRUIRE, AMELIORER, ASSIGNER, DEFINIR_REGLE.\n"
+        + "Exemple : \"Construis une scierie dans la forêt.\" -> "
+        + "{\"intention\":\"CONSTRUIRE\",\"entites\":[{\"type\":\"BATIMENT\",\"valeur\":\"scierie\"},{\"type\":\"ZONE\",\"valeur\":\"forêt\"}]}.\n\n"
+        + "Si la commande est ambiguë : renvoie {\"intention\": \"INCONNU\", \"entites\": []}."
+        + "Input de l'utilisateur : \n\n";
+
+    private void Start()
+    {
+        SendPrompt("Construis une scierie dans la forêt.");
+    }
+
+    [System.Serializable]
+    private class RequestBody
+    {
+        public string model;
+        public string prompt;
+        public bool stream;
+    }
+
+    [System.Serializable]
+    public class OllamaFullResponse
+    {
+        public string response;
+    }
+
+    public void SendPrompt(string userPrompt)
+    {
+        StartCoroutine(SendPromptCoroutine(userPrompt));
+    }
+
+    private IEnumerator SendPromptCoroutine(string userPrompt)
+    {
+        RequestBody body = new RequestBody
+        {
+            model = "llama3",
+            prompt = systemPrompt + userPrompt,
+            stream = false
+        };
+
+        string jsonBody = JsonUtility.ToJson(body);
+
+        Debug.Log("Envoi de la requête à l'URL : " + OLLAMA_URL);
+        Debug.Log("Avec le corps JSON : " + jsonBody);
+
+        using (UnityWebRequest request = new UnityWebRequest(OLLAMA_URL, "POST"))
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string rawJsonResponse = request.downloadHandler.text;
+
+                OllamaFullResponse fullResponse = JsonUtility.FromJson<OllamaFullResponse>(rawJsonResponse);
+                Debug.Log("Réponse parsée : " + fullResponse.response);
+
+                ParseAndExecuteCommand(fullResponse.response);
+            }
+            else
+            {
+                Debug.LogError("Erreur Ollama : " + request.error);
+                Debug.LogError("Réponse du serveur (si disponible): " + request.downloadHandler.text);
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class LLMResponseEntity
+    {
+        public string type;
+        public string valeur;
+    }
+
+    [System.Serializable]
+    public class LLMResponse
+    {
+        public string intention;
+        public LLMResponseEntity[] entites;
+    }
+
+    public void ParseAndExecuteCommand(string jsonResponse)
+    {
+        try
+        {
+            LLMResponse command = JsonUtility.FromJson<LLMResponse>(jsonResponse);
+            Debug.Log("command.intention : " + command.intention);
+
+            switch (command.intention)
+            {
+                case "CONSTRUIRE":
+                    Debug.Log($"ACTION: Construire un {command.entites[0].valeur} dans la zone {command.entites[1].valeur}");
+                    playerController.SetTarget(house); // Exemple d'action
+                    break;
+
+                case "ASSIGNER":
+                    Debug.Log($"ACTION: Assigner le PNJ {command.entites[0].valeur} au bâtiment {command.entites[1].valeur}");
+                    break;
+
+                case "DEFINIR_REGLE":
+                    Debug.Log($"ACTION: Définir une règle pour {command.entites[0].valeur} à une quantité de {command.entites[1].valeur}");
+                    break;
+
+                case "INCONNU":
+                    Debug.LogWarning("Intention inconnue ou commande ambiguë.");
+                    break;
+
+                default:
+                    Debug.LogError("Intention non gérée: " + command.intention);
+                    break;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Erreur de parsing du JSON de la commande: " + e.Message);
+        }
+    }
+}
