@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2641066329759938793}
   - component: {fileID: 2808910807900997546}
+  - component: {fileID: -4770591769719011381}
   m_Layer: 6
   m_Name: House
   m_TagString: Untagged
@@ -54,6 +55,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6, y: 4, z: 4}
   m_Center: {x: 0, y: 2, z: 0}
+--- !u!114 &-4770591769719011381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216927150518009853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce8df6fe7a82c9140ad30c78c493f073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Building
+  buildingData: {fileID: 11400000, guid: bc5e0a043bfbe234b979b8d5ba94dec4, type: 2}
+  resourceManager: {fileID: 0}
 --- !u!1001 &4842508452875530443
 PrefabInstance:
   m_ObjectHideFlags: 0

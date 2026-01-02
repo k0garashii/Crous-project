@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8670d1e7c2397494daadd1be6c1cb29f, type: 3}
+  m_Name: House
+  m_EditorClassIdentifier: Assembly-CSharp::SO_Resources
+  wood: 3
+  stone: 0
+  clay: 0
+  iron: 0
+  gold: 0
+  food: 0
+  water: 0
+  energy: 0
+  reasearchPoints: 0
+  happiness: 0
+  population: 0

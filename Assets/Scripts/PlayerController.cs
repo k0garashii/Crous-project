@@ -3,10 +3,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    AIDestinationSetter aiDestinationSetter;
+    public GameObject target;
+    private AIDestinationSetter aiDestinationSetter;
+    
     public void Start()
     {
         aiDestinationSetter = GetComponent<AIDestinationSetter>();
+        SetTarget(target.transform);
     }
 
     public void SetTarget(Transform position)
