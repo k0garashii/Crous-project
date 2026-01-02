@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
-using System.Collections;
+﻿using System.Collections;
 using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Networking;
 
 public class LLM_Manager : MonoBehaviour
 {
@@ -9,6 +10,10 @@ public class LLM_Manager : MonoBehaviour
     public Transform house;
 
     private const string OLLAMA_URL = "http://localhost:11434/api/generate";
+    private const string COMPREHENSION_MODEL = "llama3";
+
+    private const string EMBEDDING_URL = "http://localhost:11434/api/embeddings";
+    private const string EMBEDDING_MODEL = "nomic-embed-text";
 
     private string systemPrompt =
         "Tu es un interpréteur de commandes pour un jeu vidéo de simulation urbaine. "
@@ -34,54 +39,15 @@ public class LLM_Manager : MonoBehaviour
     }
 
     [System.Serializable]
-    public class OllamaFullResponse
+    public class OllamaStringResponse
     {
         public string response;
     }
 
-    public void SendPrompt(string userPrompt)
+    [System.Serializable]
+    private class EmbeddingResponse
     {
-        StartCoroutine(SendPromptCoroutine(userPrompt));
-    }
-
-    private IEnumerator SendPromptCoroutine(string userPrompt)
-    {
-        RequestBody body = new RequestBody
-        {
-            model = "llama3",
-            prompt = systemPrompt + userPrompt,
-            stream = false
-        };
-
-        string jsonBody = JsonUtility.ToJson(body);
-
-        Debug.Log("Envoi de la requête à l'URL : " + OLLAMA_URL);
-        Debug.Log("Avec le corps JSON : " + jsonBody);
-
-        using (UnityWebRequest request = new UnityWebRequest(OLLAMA_URL, "POST"))
-        {
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                string rawJsonResponse = request.downloadHandler.text;
-
-                OllamaFullResponse fullResponse = JsonUtility.FromJson<OllamaFullResponse>(rawJsonResponse);
-                Debug.Log("Réponse parsée : " + fullResponse.response);
-
-                ParseAndExecuteCommand(fullResponse.response);
-            }
-            else
-            {
-                Debug.LogError("Erreur Ollama : " + request.error);
-                Debug.LogError("Réponse du serveur (si disponible): " + request.downloadHandler.text);
-            }
-        }
+        public float[] embedding;
     }
 
     [System.Serializable]
@@ -98,6 +64,88 @@ public class LLM_Manager : MonoBehaviour
         public LLMResponseEntity[] entites;
     }
 
+    public void SendPrompt(string userPrompt)
+    {
+        StartCoroutine(SendPromptCoroutine(userPrompt));
+    }
+
+    private IEnumerator SendPromptCoroutine(string userPrompt)
+    {
+        RequestBody body = new RequestBody
+        {
+            model = COMPREHENSION_MODEL,
+            prompt = systemPrompt + userPrompt,
+            stream = false
+        };
+
+        string jsonBody = JsonUtility.ToJson(body);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+        Debug.Log("Envoi de la requête à l'URL : " + OLLAMA_URL);
+        Debug.Log("Avec le corps JSON : " + jsonBody);
+
+        using (UnityWebRequest request = new UnityWebRequest(OLLAMA_URL, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string rawJsonResponse = request.downloadHandler.text;
+
+                OllamaStringResponse fullResponse = JsonUtility.FromJson<OllamaStringResponse>(rawJsonResponse);
+                Debug.Log("Réponse parsée : " + fullResponse.response);
+
+                ParseAndExecuteCommand(fullResponse.response);
+            }
+            else
+            {
+                Debug.LogError("Erreur Ollama : " + request.error);
+                Debug.LogError("Réponse du serveur (si disponible): " + request.downloadHandler.text);
+            }
+        }
+    }
+    public static async Task<float[]> GetEmbedding(string text)
+    {
+        RequestBody body = new RequestBody
+        {
+            model = EMBEDDING_MODEL,
+            prompt = text
+        };
+
+        string jsonBody = JsonUtility.ToJson(body);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+        using (UnityWebRequest request = new UnityWebRequest(EMBEDDING_URL, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            var operation = request.SendWebRequest();
+
+            while (!operation.isDone)
+            {
+                await Task.Yield();
+            }
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string jsonResponse = request.downloadHandler.text;
+                EmbeddingResponse response = JsonUtility.FromJson<EmbeddingResponse>(jsonResponse);
+                return response.embedding;
+            }
+            else
+            {
+                Debug.LogError("Erreur d'embedding Ollama : " + request.error);
+                Debug.LogError("Réponse du serveur : " + request.downloadHandler.text);
+                return null;
+            }
+        }
+    }
     public void ParseAndExecuteCommand(string jsonResponse)
     {
         try
