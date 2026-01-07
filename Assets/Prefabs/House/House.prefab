@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2641066329759938793}
   - component: {fileID: 2808910807900997546}
   - component: {fileID: -4770591769719011381}
+  - component: {fileID: 2511407124221433425}
+  - component: {fileID: 8078281665417847042}
   m_Layer: 6
   m_Name: House
   m_TagString: Untagged
@@ -68,7 +70,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Building
   buildingData: {fileID: 11400000, guid: bc5e0a043bfbe234b979b8d5ba94dec4, type: 2}
-  resourceManager: {fileID: 0}
+  sizeX: 0
+  sizeY: 0
+--- !u!114 &2511407124221433425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216927150518009853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4a8798a1bb4cff4dba733c0dd34a13e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::House
+  peopleInside: 0
+  insidePoint: {fileID: 0}
+--- !u!114 &8078281665417847042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2216927150518009853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 575d600f3a2357a418faf08591af2a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HouseInteraction
 --- !u!1001 &4842508452875530443
 PrefabInstance:
   m_ObjectHideFlags: 0
