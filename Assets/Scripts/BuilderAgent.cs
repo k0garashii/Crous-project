@@ -1,14 +1,18 @@
 ﻿using Pathfinding;
 using UnityEngine;
+using System.Collections;
 
 public class BuilderAgent : MonoBehaviour
 {
     [Header("References")]
     public GridManager grid;
     public GameObject housePrefab;
+    public GameObject buildPlaceholderPrefab;
+    public BuildProgressUI buildUI;
 
     [Header("Build Settings")]
     public float buildDistance = 1.2f;
+    public float buildTime = 5f;
 
     private AIDestinationSetter destinationSetter;
     private AIPath aiPath;
@@ -16,8 +20,10 @@ public class BuilderAgent : MonoBehaviour
     private Transform buildTarget;
     private int targetX;
     private int targetY;
+
     private bool hasTarget = false;
     private bool hasBuilt = false;
+    private bool isBuilding = false;
 
     private House currentHouse;
     private bool isInside = false;
@@ -33,9 +39,11 @@ public class BuilderAgent : MonoBehaviour
         HandleBuild();
     }
 
+    // ===================== BUILD =====================
+
     public void SetBuildCell(int x, int y)
     {
-        if (hasBuilt || grid == null) return;
+        if (hasBuilt || isBuilding || grid == null) return;
 
         targetX = x;
         targetY = y;
@@ -51,6 +59,7 @@ public class BuilderAgent : MonoBehaviour
         buildTarget.position = worldPos;
 
         destinationSetter.target = buildTarget;
+        aiPath.canMove = true;
         aiPath.SearchPath();
 
         hasTarget = true;
@@ -58,15 +67,53 @@ public class BuilderAgent : MonoBehaviour
 
     void HandleBuild()
     {
-        if (!hasTarget || hasBuilt) return;
+        if (!hasTarget || hasBuilt || isBuilding) return;
 
         Vector3 targetPos = grid.CellToWorld(targetX, targetY);
 
         if (Vector3.Distance(transform.position, targetPos) <= buildDistance)
         {
-            BuildHouse(targetPos);
             aiPath.canMove = false;
+            StartCoroutine(BuildCoroutine(targetPos));
         }
+    }
+
+    IEnumerator BuildCoroutine(Vector3 position)
+    {
+        isBuilding = true;
+
+        GameObject placeholder = Instantiate(
+            buildPlaceholderPrefab,
+            position,
+            Quaternion.identity
+        );
+
+        float timer = 0f;
+
+        if (buildUI != null)
+        {
+            buildUI.gameObject.SetActive(true);
+            buildUI.Init(placeholder.transform, buildTime);
+        }
+
+        while (timer < buildTime)
+        {
+            timer += Time.deltaTime;
+
+            if (buildUI != null)
+                buildUI.SetProgress(timer);
+
+            yield return null;
+        }
+
+        if (buildUI != null)
+            buildUI.gameObject.SetActive(false);
+
+        Destroy(placeholder);
+
+        BuildHouse(position);
+
+        isBuilding = false;
     }
 
     void BuildHouse(Vector3 position)
@@ -81,8 +128,12 @@ public class BuilderAgent : MonoBehaviour
         hasBuilt = true;
         hasTarget = false;
 
+        aiPath.canMove = true;
+
         Debug.Log("Maison construite");
     }
+
+    // ===================== House =====================
 
     public void ToggleHouse(House house)
     {
@@ -94,7 +145,6 @@ public class BuilderAgent : MonoBehaviour
             ExitHouse();
     }
 
-    //Utilitaries 
     void EnterHouse(House house)
     {
         if (!house.CanEnter()) return;
@@ -102,7 +152,7 @@ public class BuilderAgent : MonoBehaviour
         currentHouse = house;
         house.AddOccupant(this);
 
-        HideBuilder();
+        gameObject.SetActive(false);
         isInside = true;
 
         Debug.Log("Builder entré dans la maison");
@@ -113,27 +163,19 @@ public class BuilderAgent : MonoBehaviour
         if (currentHouse == null) return;
 
         Vector3 exitPos = currentHouse.GetSafeExitPosition();
-        transform.position = exitPos;
+
+        transform.position = exitPos + Vector3.up * 0.1f;
 
         currentHouse.RemoveOccupant(this);
 
+        gameObject.SetActive(true);
         isInside = false;
         currentHouse = null;
-        aiPath.canMove = true;
+
         destinationSetter.target = null;
+        aiPath.canMove = true;
         aiPath.SearchPath();
-        ShowBuilder();
 
         Debug.Log("Builder sorti de la maison");
-    }
-
-    void HideBuilder()
-    {
-        transform.gameObject.SetActive(false);
-    }
-
-    void ShowBuilder()
-    {
-        transform.gameObject.SetActive(true);
     }
 }
