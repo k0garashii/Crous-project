@@ -3,6 +3,8 @@ using UnityEngine;
 public class MouseClickManager : MonoBehaviour
 {
     public Camera cam;
+    public GridManager grid;
+    public BuilderAgent builder;
 
     void Update()
     {
@@ -12,10 +14,24 @@ public class MouseClickManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                HouseInteraction house = hit.collider.GetComponentInParent<HouseInteraction>();
+                House house = hit.collider.GetComponent<House>();
                 if (house != null)
                 {
                     house.HandleClick(Input.GetMouseButtonDown(0) ? 0 : 1);
+                }
+            }
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                if (grid.WorldToCell(hit.point, out int x, out int y))
+                {
+                    if (grid.IsFree(x, y))
+                    {
+                        builder.SetBuildCell(x, y);
+                    }
                 }
             }
         }

@@ -22,23 +22,16 @@ public class BuilderAgent : MonoBehaviour
     private House currentHouse;
     private bool isInside = false;
 
-    private Renderer[] renderers;
-    private Collider[] colliders;
-
     void Awake()
     {
         destinationSetter = GetComponent<AIDestinationSetter>();
         aiPath = GetComponent<AIPath>();
-
-        renderers = GetComponentsInChildren<Renderer>();
-        colliders = GetComponentsInChildren<Collider>();
     }
 
     void Update()
     {
         HandleBuild();
     }
-
 
     public void SetBuildCell(int x, int y)
     {
@@ -72,6 +65,7 @@ public class BuilderAgent : MonoBehaviour
         if (Vector3.Distance(transform.position, targetPos) <= buildDistance)
         {
             BuildHouse(targetPos);
+            aiPath.canMove = false;
         }
     }
 
@@ -82,9 +76,6 @@ public class BuilderAgent : MonoBehaviour
         if (!house.GetComponent<House>())
             house.AddComponent<House>();
 
-        if (!house.GetComponent<HouseInteraction>())
-            house.AddComponent<HouseInteraction>();
-
         grid.Occupy(targetX, targetY);
 
         hasBuilt = true;
@@ -92,7 +83,6 @@ public class BuilderAgent : MonoBehaviour
 
         Debug.Log("Maison construite");
     }
-
 
     public void ToggleHouse(House house)
     {
@@ -104,6 +94,7 @@ public class BuilderAgent : MonoBehaviour
             ExitHouse();
     }
 
+    //Utilitaries 
     void EnterHouse(House house)
     {
         if (!house.CanEnter()) return;
@@ -126,28 +117,23 @@ public class BuilderAgent : MonoBehaviour
 
         currentHouse.RemoveOccupant(this);
 
-        ShowBuilder();
         isInside = false;
         currentHouse = null;
+        aiPath.canMove = true;
+        destinationSetter.target = null;
+        aiPath.SearchPath();
+        ShowBuilder();
 
         Debug.Log("Builder sorti de la maison");
     }
 
     void HideBuilder()
     {
-        foreach (var r in renderers)
-            r.enabled = false;
-
-        foreach (var c in colliders)
-            c.enabled = false;
+        transform.gameObject.SetActive(false);
     }
 
     void ShowBuilder()
     {
-        foreach (var r in renderers)
-            r.enabled = true;
-
-        foreach (var c in colliders)
-            c.enabled = true;
+        transform.gameObject.SetActive(true);
     }
 }

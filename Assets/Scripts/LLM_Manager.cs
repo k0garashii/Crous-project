@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class LLM_Manager : MonoBehaviour
 {
-    public PlayerController playerController;
+    //public PlayerController playerController;
     public Transform house;
 
     private const string OLLAMA_URL = "http://localhost:11434/api/generate";
@@ -157,7 +157,7 @@ public class LLM_Manager : MonoBehaviour
             {
                 case "CONSTRUIRE":
                     Debug.Log($"ACTION: Construire un {command.entites[0].valeur} dans la zone {command.entites[1].valeur}");
-                    playerController.SetTarget(house); // Exemple d'action
+                    //playerController.SetTarget(house); // Exemple d'action
                     break;
 
                 case "ASSIGNER":

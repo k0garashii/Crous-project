@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class House : MonoBehaviour
 {
@@ -10,8 +11,6 @@ public class House : MonoBehaviour
     public Transform ExitPoint;
 
     private List<BuilderAgent> occupants = new();
-
-    public int OccupantCount => occupants.Count;
 
     public bool CanEnter()
     {
@@ -31,7 +30,7 @@ public class House : MonoBehaviour
 
     public void ShowInfo()
     {
-        Debug.Log($"Maison : {OccupantCount}/{maxOccupants} occupants");
+        Debug.Log($"Maison : {occupants.Count}/{maxOccupants} occupants");
     }
 
     public Vector3 GetSafeExitPosition()
@@ -40,5 +39,20 @@ public class House : MonoBehaviour
             return ExitPoint.position;
 
         return transform.position + transform.forward * 1.5f;
+    }
+    public void HandleClick(int mouseButton)
+    {
+
+        if (mouseButton == 0)
+        {
+            BuilderAgent builder = FindFirstObjectByType<BuilderAgent>();
+            if (!builder)
+                builder = occupants[0];
+            builder.ToggleHouse(this);
+        }
+        else if (mouseButton == 1)
+        {
+            ShowInfo();
+        }
     }
 }
