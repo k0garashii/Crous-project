@@ -450,8 +450,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 726117979}
+  - component: {fileID: 726117981}
   - component: {fileID: 726117978}
   - component: {fileID: 726117980}
+  - component: {fileID: 726117982}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -503,6 +505,43 @@ MonoBehaviour:
   cam: {fileID: 427515175}
   grid: {fileID: 726117978}
   builder: {fileID: 1108300566}
+--- !u!114 &726117981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726117977}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a87e7951e5862d74781028a34ea73daa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LLM_Manager
+  builderAgent: {fileID: 1108300566}
+  prompt: "Construis une scierie dans la for\xEAt."
+--- !u!114 &726117982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726117977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e30b9c82fbe1144e83f5fb529b9b9fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
+  wood: 22
+  stone: 0
+  clay: 0
+  iron: 0
+  gold: 0
+  food: 0
+  water: 0
+  energy: 0
+  reasearchPoints: 0
+  happiness: 0
+  population: 0
 --- !u!1001 &909394749
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -662,11 +701,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderAgent
   grid: {fileID: 726117978}
-  housePrefab: {fileID: 9092798993701398046, guid: 8ba56cf549a8b7449a3b9ef9c2924a47, type: 3}
+  housePrefab: {fileID: 2216927150518009853, guid: 645cc4989cebf2f4da0aca142a4ab0b7, type: 3}
   buildPlaceholderPrefab: {fileID: 3382450189260364659, guid: b27a6eef56cfef344abca2c8734ccf62, type: 3}
-  buildUI: {fileID: 0}
   buildDistance: 2
   buildTime: 5
+  buildUI: {fileID: 0}
 --- !u!1 &1537806608
 GameObject:
   m_ObjectHideFlags: 0

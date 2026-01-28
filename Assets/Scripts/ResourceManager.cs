@@ -16,7 +16,7 @@ public class ResourceManager : MonoBehaviour
 
     [HideInInspector] public static ResourceManager Instance;
 
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {

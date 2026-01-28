@@ -7,7 +7,8 @@ using UnityEngine.Networking;
 public class LLM_Manager : MonoBehaviour
 {
     //public PlayerController playerController;
-    public Transform house;
+    public BuilderAgent builderAgent;
+    public string prompt;
 
     private const string OLLAMA_URL = "http://localhost:11434/api/generate";
     private const string COMPREHENSION_MODEL = "llama3";
@@ -27,7 +28,7 @@ public class LLM_Manager : MonoBehaviour
 
     private void Start()
     {
-        SendPrompt("Construis une scierie dans la forêt.");
+        SendPrompt(prompt);
     }
 
     [System.Serializable]
@@ -157,7 +158,8 @@ public class LLM_Manager : MonoBehaviour
             {
                 case "CONSTRUIRE":
                     Debug.Log($"ACTION: Construire un {command.entites[0].valeur} dans la zone {command.entites[1].valeur}");
-                    //playerController.SetTarget(house); // Exemple d'action
+                    //Fonction : est ce que j'ai assez de matériaux ? Est ce que la zone est libre ?
+                    builderAgent.SetBuildCell(4, 4); // Exemple d'action
                     break;
 
                 case "ASSIGNER":

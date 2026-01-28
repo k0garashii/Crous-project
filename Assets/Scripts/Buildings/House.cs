@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class House : MonoBehaviour
 {
@@ -42,7 +41,6 @@ public class House : MonoBehaviour
     }
     public void HandleClick(int mouseButton)
     {
-
         if (mouseButton == 0)
         {
             BuilderAgent builder = FindFirstObjectByType<BuilderAgent>();

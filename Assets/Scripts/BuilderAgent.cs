@@ -66,7 +66,7 @@ public class BuilderAgent : MonoBehaviour
         hasTarget = true;
     }
 
-    void HandleBuild()
+    private void HandleBuild()
     {
         if (!hasTarget || hasBuilt || isBuilding) return;
 
@@ -119,6 +119,10 @@ public class BuilderAgent : MonoBehaviour
 
     void BuildHouse(Vector3 position)
     {
+        Building buildInfo = housePrefab.GetComponent<Building>();
+        if (!buildInfo.Build())
+            return;
+
         GameObject house = Instantiate(housePrefab, position, Quaternion.identity);
 
         if (!house.GetComponent<House>())

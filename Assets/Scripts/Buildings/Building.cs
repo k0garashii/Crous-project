@@ -5,10 +5,10 @@ public class Building : MonoBehaviour
     public ScriptableObject buildingData;
     public int sizeX;
     public int sizeY;
+
     private ResourceManager resourceManager;
     void Start()
     {
-        
     }
 
     void Update()
@@ -18,6 +18,10 @@ public class Building : MonoBehaviour
 
     public bool Build()
     {
+        if(!resourceManager)
+        {
+            resourceManager = ResourceManager.Instance;
+        }
         if (buildingData is SO_Resources data)
         {
             if (resourceManager.wood >= data.wood &&
