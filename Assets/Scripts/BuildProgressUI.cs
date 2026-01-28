@@ -4,13 +4,9 @@ using UnityEngine.UI;
 public class BuildProgressUI : MonoBehaviour
 {
     public Slider slider;
-    public Vector3 offset = new Vector3(0, 2f, 0);
 
-    private Transform target;
-
-    public void Init(Transform followTarget, float duration)
+    public void Init(float duration)
     {
-        target = followTarget;
         slider.maxValue = duration;
         slider.value = 0;
     }
@@ -22,7 +18,7 @@ public class BuildProgressUI : MonoBehaviour
 
     void LateUpdate()
     {
-        if (target)
-            transform.position = target.position + offset;
+        transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward,
+                             Camera.main.transform.rotation * Vector3.up);
     }
 }

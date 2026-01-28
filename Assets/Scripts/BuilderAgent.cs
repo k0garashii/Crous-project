@@ -6,13 +6,14 @@ public class BuilderAgent : MonoBehaviour
 {
     [Header("References")]
     public GridManager grid;
-    public GameObject housePrefab;
-    public GameObject buildPlaceholderPrefab;
-    public BuildProgressUI buildUI;
 
     [Header("Build Settings")]
+    public GameObject housePrefab;
+    public GameObject buildPlaceholderPrefab;
     public float buildDistance = 1.2f;
     public float buildTime = 5f;
+
+    public BuildProgressUI buildUI;
 
     private AIDestinationSetter destinationSetter;
     private AIPath aiPath;
@@ -88,12 +89,13 @@ public class BuilderAgent : MonoBehaviour
             Quaternion.identity
         );
 
+        buildUI = placeholder.GetComponentInChildren<BuildProgressUI>(true);
+
         float timer = 0f;
 
         if (buildUI != null)
         {
-            buildUI.gameObject.SetActive(true);
-            buildUI.Init(placeholder.transform, buildTime);
+            buildUI.Init(buildTime);
         }
 
         while (timer < buildTime)
@@ -101,13 +103,12 @@ public class BuilderAgent : MonoBehaviour
             timer += Time.deltaTime;
 
             if (buildUI != null)
+            {
                 buildUI.SetProgress(timer);
+            }
 
             yield return null;
         }
-
-        if (buildUI != null)
-            buildUI.gameObject.SetActive(false);
 
         Destroy(placeholder);
 
