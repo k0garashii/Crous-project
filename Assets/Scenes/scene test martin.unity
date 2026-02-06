@@ -119,6 +119,74 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &89450328
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 89450330}
+  - component: {fileID: 89450329}
+  - component: {fileID: 89450331}
+  m_Layer: 0
+  m_Name: WoodZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &89450329
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89450328}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10, y: 0.5, z: 10}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &89450330
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89450328}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 41.79, y: 0.5, z: 27.43}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &89450331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 89450328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a825257a0445e1449f890c7f386bf66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WoodZone
+  woodPerTick: 1
+  gatherInterval: 1
 --- !u!1 &171094828
 GameObject:
   m_ObjectHideFlags: 0
@@ -531,7 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e30b9c82fbe1144e83f5fb529b9b9fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
-  wood: 22
+  wood: 0
   stone: 0
   clay: 0
   iron: 0
@@ -706,6 +774,8 @@ MonoBehaviour:
   buildDistance: 2
   buildTime: 5
   buildUI: {fileID: 0}
+  woodZoneTarget: {fileID: 89450330}
+  requiredWood: 5
 --- !u!1 &1537806608
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,3 +915,4 @@ SceneRoots:
   - {fileID: 533069294}
   - {fileID: 726117979}
   - {fileID: 946060397}
+  - {fileID: 89450330}
