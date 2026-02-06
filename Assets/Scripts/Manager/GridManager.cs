@@ -9,8 +9,12 @@ public class GridManager : MonoBehaviour
     private Vector3 origin;
     private bool[,] occupied;
 
+    public static GridManager instance;
+
     void Awake()
     {
+        instance = this;
+
         Bounds b = ground.bounds;
 
         sizeX = Mathf.FloorToInt(b.size.x / cellSize);

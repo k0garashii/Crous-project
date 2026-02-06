@@ -41,7 +41,6 @@ public class Building : MonoBehaviour
                 resourceManager.food -= data.food;
                 resourceManager.water -= data.water;
                 resourceManager.energy -= data.energy;
-                Debug.Log($"{data} built successfully! {data.wood} wood restant");
                 return true;
             }
             else

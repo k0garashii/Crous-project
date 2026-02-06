@@ -159,7 +159,7 @@ public class LLM_Manager : MonoBehaviour
                 case "CONSTRUIRE":
                     Debug.Log($"ACTION: Construire un {command.entites[0].valeur} dans la zone {command.entites[1].valeur}");
                     //Fonction : est ce que j'ai assez de matériaux ? Est ce que la zone est libre ?
-                    builderAgent.SetBuildCell(4, 4); // Exemple d'action
+                    builderAgent.actualState.SetDestination(4, 4); // Exemple d'action
                     break;
 
                 case "ASSIGNER":

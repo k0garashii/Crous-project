@@ -30,7 +30,7 @@ public class MouseClickManager : MonoBehaviour
                 {
                     if (grid.IsFree(x, y))
                     {
-                        builder.SetBuildCell(x, y);
+                        builder.actualState.SetDestination(x, y);
                     }
                 }
             }
