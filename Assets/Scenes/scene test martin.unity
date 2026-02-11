@@ -640,13 +640,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 726117977}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a87e7951e5862d74781028a34ea73daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LLM_Manager
   builderAgent: {fileID: 1108300566}
-  prompt: "Construis une scierie dans la for\xEAt."
+  prompt: Construis une maison en 0 0
 --- !u!114 &726117982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -795,7 +795,7 @@ Transform:
   m_GameObject: {fileID: 922293132}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.56372, y: 0, z: 20.44609}
+  m_LocalPosition: {x: 40.37, y: 0, z: 23.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -887,6 +887,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuilderAgent
   actualState: {fileID: 11400000, guid: 4190be89cebad294685a65ed4c84d33a, type: 2}
+  llmManager: {fileID: 0}
+  currentObjective: construire une maison
 --- !u!1 &1537806608
 GameObject:
   m_ObjectHideFlags: 0
